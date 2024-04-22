@@ -17,6 +17,7 @@ MODE = os.getenv('MODE', 'edit') # run or edit
 SCOPE = "openid email profile"
 REDIRECT_URI = os.getenv('REDIRECT_URI')
 ALLOW_EMAILS = os.getenv('ALLOW_EMAILS', "").split(' ')
+ALLOW_DOMAINS = os.getenv('ALLOW_DOMAINS', "").split(' ')
 
 
 auth0 = OAuth2Session(
@@ -56,8 +57,9 @@ def callback(request: Request):
     token = auth0.fetch_token(token_endpoint='https://{ISSUER_DOMAIN}/oauth/token', authorization_response=str(request.url))
     resp = auth0.get(f'https://{ISSUER_DOMAIN}/userinfo')
     userinfo = resp.json()
-    email = userinfo['email']
-    if email in ALLOW_EMAILS:
+    email: str = userinfo['email']
+    domain = email.split("@")[1]
+    if email in ALLOW_EMAILS or domain in ALLOW_DOMAINS:
         session = request.session
         session['username'] = email
         response = RedirectResponse(url='/app1')
