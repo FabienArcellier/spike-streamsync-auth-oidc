@@ -29,9 +29,6 @@ auth0 = OAuth2Session(
     token_endpoint=f'https://{ISSUER_DOMAIN}/oauth/token',
 )
 
-app_path = "." # . for current working directory
-
-
 root_asgi_app = FastAPI(lifespan=streamsync.serve.lifespan)
 
 @root_asgi_app.get("/")
@@ -62,7 +59,7 @@ def callback(request: Request):
     if email in ALLOW_EMAILS or domain in ALLOW_DOMAINS:
         session = request.session
         session['username'] = email
-        response = RedirectResponse(url='/app1')
+        response = RedirectResponse(url='/app')
         return response
     else:
         response = RedirectResponse(url='/401')
@@ -82,14 +79,15 @@ def callback(request: Request):
         <h1>Invalid username</h1>
     """)
 
-sub_asgi_app_1 = streamsync.serve.get_asgi_app(".", MODE)
-root_asgi_app.mount("/app1", sub_asgi_app_1)
+sub_asgi_app = streamsync.serve.get_asgi_app(os.path.dirname(__file__), MODE, enable_remote_edit=True)
+root_asgi_app.mount("/app", sub_asgi_app)
 
 root_asgi_app.add_middleware(SessionMiddleware, secret_key="xxxxxxxxxx-xxxx")
 
-
 uvicorn.run(root_asgi_app,
     host="0.0.0.0",
-    port=5000,
+    port=int(os.getenv("PORT", "5000")),
     log_level="warning",
-    ws_max_size=streamsync.serve.MAX_WEBSOCKET_MESSAGE_SIZE)
+    ws_max_size=streamsync.serve.MAX_WEBSOCKET_MESSAGE_SIZE,
+    reload=False,
+    workers=1)
