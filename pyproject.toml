@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "blueprint-streamsync"
+description = "blueprint to implement streamsync app - low code with python"
+authors = ["Fabien Arcellier <fabien.arcellier@gmail.com>"]
+license = "MIT"
+version = "1.0.0"
+readme = "README.md"
+packages = [{include = "app", from = "src"}]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Environment :: Console"
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+python-dotenv = "^1.0.0"
+streamsync = "^0.4.0"
+authlib = "^1.3.0"
+requests = "^2.31.0"
+itsdangerous = "^2.2.0"
+
+
+
+[tool.poetry.group.dev.dependencies]
+alfred-cli = "^2.1.1"
+mypy = "^1.4.1"
+pytest = "^7.4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
