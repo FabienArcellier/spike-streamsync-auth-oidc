@@ -23,6 +23,9 @@ def increment(state):
     print(f"The counter has been incremented.")
     _update_message(state)
 
+def update_username(state, session):
+    state['username'] = session['cookies'].get('username', '')
+
 # Initialise the state
 
 # "_my_private_element" won't be serialised or sent to the frontend,
@@ -35,6 +38,7 @@ initial_state = ss.init_state({
     "_my_private_element": 1337,
     "message": None,
     "counter": 26,
+    "username": ''
 })
 
 _update_message(initial_state)

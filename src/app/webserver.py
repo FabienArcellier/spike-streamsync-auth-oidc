@@ -60,6 +60,7 @@ def callback(request: Request):
         session = request.session
         session['username'] = email
         response = RedirectResponse(url='/app')
+        response.set_cookie(key="username", value=email)
         return response
     else:
         response = RedirectResponse(url='/401')
